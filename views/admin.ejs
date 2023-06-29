@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head'); %>
+</head>
+
+<body>
+    <header>
+        <%- include('./partials/header'); %>
+    </header>
+    <main class="mt-5 container py-4">
+        <h1>Admin View</h1>
+        <div class="row gx-4 border p-4">
+            <div class="col">
+                <h2>Add New Employee</h2>
+                <form action="/register" method="POST">
+                    <div class="form-outline mb-4">
+                        <input class="form-control" id="name" type="text" name="name" placeholder="Employee Name" required>
+                        <label class="form-label" for="name">Name</label>
+                    </div>
+
+                    <div class="form-outline mb-4">
+                        <input class="form-control" id="email" type="email" name="email" placeholder="Employee Email" required>
+                        <label class="form-label" for="email">Email</label>
+                    </div>
+
+                    <div class="form-outline mb-4">
+                        <input class="form-control" id="password" type="password" name="password" placeholder="Password" required>
+                        <label class="form-label" for="password">Password</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-4">
+                        <input class="form-check-input" type="checkbox" name="isAdmin" role="switch" id="flexSwitchCheckDefault" />
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Admin</label>
+                    </div>
+                    
+                    <button class="btn btn-primary" type="submit">Add Employee</button>
+                </form>
+            </div>
+
+            <div class="col">
+                <h2>Employees</h2>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Admin</th>
+                            <th>
+                                Reviewer
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% employees.forEach(function(employee, index) { %>
+                            <tr>
+                                <form action="/employee/addreview/<%= employee._id %>" method="post">
+                                    <th scope="row">
+                                        <%= index+1 %>
+                                    </th>
+                                    <td>
+                                        <%= employee.name %>
+                                    </td>
+                                    <td>
+                                        <%= employee.email %>
+                                    </td>
+                                    <td>
+                                        <input class="isAdminCheck" data="<%=employee._id %>" class="form-check-input" type="checkbox" role="switch"  <% if (employee.isAdmin) { %> checked <% } %> />
+                                    </td>
+                                    <td>
+                                        <select name="reviewers" class="form-select" aria-label="Select reviewer"
+                                            aria-placeholder="select reviewer" multiple>
+                                            <option selected disabled>Select a Reviewer</option>
+                                            <% employees.filter(emp => emp._id !== employee._id).forEach(function(employee, index) { %>
+                                                <option value="<%= employee._id %>">
+                                                    <%= employee.name %>
+                                                </option>
+                                                <% }) %>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                    </td>
+                                </form>
+                                
+                            </tr>
+                            <% }) %>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="row">
+            <% reviews.forEach(function(review, index) { %>
+                <div>
+                    <h5>Review Of <%= review.employeeId.name %></h5>
+                    <ul>
+                        <% review.reviewers.forEach(function(reviewer, index) { %>
+                            <% if (reviewer.feedback) { %>
+                                <li>
+                                    Reviewed By:  <%= reviewer.reviewer.name %>
+                                    FeedBack : <%= reviewer.feedback %>
+                                </li>
+                            <% } %>
+                        <% }) %>
+                    </ul>
+                </div>
+            <% }) %>
+        </div>
+    </main>
+    <footer>
+        <%- include('./partials/footer'); %>
+    </footer>
+    <script src="/admin.js"></script>
+
+</body>
+
+</html>

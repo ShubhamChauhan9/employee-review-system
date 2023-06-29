@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head'); %>
+</head>
+
+<body>
+    <header>
+        <%- include('./partials/header'); %>
+    </header>
+    <main class="mt-5 container py-4">
+        <h1>Employee View</h1>
+        <div class="row gx-4 border p-4">
+            <div class="col">
+                <h2>Performance Reviews Requiring Feedback</h2>
+                <!-- Add form for submitting feedback -->
+                <% reviews.forEach(function(review) { %>
+                    <div class="border p-4 mb-2">
+                        <h5> Submit Feedback for <%= review.employeeId.name %>
+                        </h5>
+                        <form action="/employee/performance-reviews/<%= review._id %>/<%=user._id %>" method="post">
+                            <div class="form-outline mb-4">
+                                <input class="form-control" value="<%= review.reviewers.find(rev => rev.reviewer.equals(user._id))?.feedback %>" id="feedback" type="text" name="feedback"
+                                    placeholder="Feedback" required>
+                                <label class="form-label" for="feedback">Feedback</label>
+                            </div>
+                            <button class="btn btn-primary" type="submit">Submit Feedback</button>
+                        </form>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <%- include('./partials/footer'); %>
+    </footer>
+    <script src="/script.js"></script>
+
+</body>
+
+</html>
