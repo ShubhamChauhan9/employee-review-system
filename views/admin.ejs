@@ -34,7 +34,7 @@
                         <input class="form-check-input" type="checkbox" name="isAdmin" role="switch" id="flexSwitchCheckDefault" />
                         <label class="form-check-label" for="flexSwitchCheckDefault">Admin</label>
                     </div>
-                    
+
                     <button class="btn btn-primary" type="submit">Add Employee</button>
                 </form>
             </div>
@@ -72,16 +72,21 @@
                                         <%= employee.email %>
                                     </td>
                                     <td>
-                                        <input class="isAdminCheck" data="<%=employee._id %>" class="form-check-input" type="checkbox" role="switch"  <% if (employee.isAdmin) { %> checked <% } %> />
+                                        <input class="isAdminCheck" data="<%=employee._id %>" class="form-check-input" type="checkbox" role="switch" <% if (employee.isAdmin) { %> checked
+                                        <% } %> />
                                     </td>
                                     <td>
-                                        <select name="reviewers" class="form-select" aria-label="Select reviewer"
-                                            aria-placeholder="select reviewer" multiple>
+                                        <select name="reviewers" class="form-select" aria-label="Select reviewer" aria-placeholder="select reviewer" multiple>
                                             <option selected disabled>Select a Reviewer</option>
                                             <% employees.filter(emp => emp._id !== employee._id).forEach(function(employee, index) { %>
-                                                <option value="<%= employee._id %>">
-                                                    <%= employee.name %>
-                                                </option>
+                                                <% if (!employee.isAdmin) { %>
+                                                    <option value="<%= employee._id %>">
+                                                        <%= employee.name %>
+                                                    </option>
+
+                                                  <% } %>
+                                                
+                                              
                                                 <% }) %>
                                         </select>
                                     </td>
@@ -89,7 +94,7 @@
                                         <button type="submit" class="btn btn-primary">Update</button>
                                     </td>
                                 </form>
-                                
+
                             </tr>
                             <% }) %>
 
@@ -100,20 +105,31 @@
         </div>
         <div class="row">
             <% reviews.forEach(function(review, index) { %>
-                <div>
-                    <h5>Review Of <%= review.employeeId.name %></h5>
-                    <ul>
-                        <% review.reviewers.forEach(function(reviewer, index) { %>
-                            <% if (reviewer.feedback) { %>
-                                <li>
-                                    Reviewed By:  <%= reviewer.reviewer.name %>
-                                    FeedBack : <%= reviewer.feedback %>
-                                </li>
-                            <% } %>
+
+                <% if (review.reviewers[0].feedback) { %>
+
+                    <div>
+                        <h5>Review Of
+                            <%= review.employeeId.name %>
+                        </h5>
+                        <ul>
+                            <% review.reviewers.forEach(function(reviewer, index) { %>
+                                <% if (reviewer.feedback) { %>
+                                    <li>
+                                        Reviewed By:
+                                        <%= reviewer.reviewer.name %>
+                                            FeedBack :
+                                            <%= reviewer.feedback %>
+                                    </li>
+                                    <% } %>
+                                        <% }) %>
+                        </ul>
+                    </div>
+
+                    <% } %>
+
+
                         <% }) %>
-                    </ul>
-                </div>
-            <% }) %>
         </div>
     </main>
     <footer>
