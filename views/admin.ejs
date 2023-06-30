@@ -76,9 +76,9 @@
                                         <% } %> />
                                     </td>
                                     <td>
-                                        <select name="reviewers" class="form-select" aria-label="Select reviewer" aria-placeholder="select reviewer" multiple>
+                                        <% if (!employee.isAdmin) { %>
+                                            <select name="reviewers" class="form-select" aria-label="Select reviewer" aria-placeholder="select reviewer" multiple>
                                             <option selected disabled>Select a Revi ewer</option>
-                                            <% if (!employee.isAdmin) { %>
 
                                             <% employees.filter(emp => emp._id !== employee._id).forEach(function(employee, index) { %>
                                                
@@ -88,8 +88,8 @@
 
                                                 <% }) %>
 
-                                                <% } %>
-                                        </select>
+                                            </select>
+                                            <% } %>
                                     </td>
                                     <td>
                                         <button type="submit" class="btn btn-primary">Update</button>
