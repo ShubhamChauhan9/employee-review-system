@@ -56,7 +56,18 @@ module.exports = function(app) {
     app.post('/employee/addreview/:employeeId', async function(req, res) {
         const { employeeId } = req.params;
         const { reviewers } = req.body;
-        let reviews = reviewers.map(reviewer => { return { reviewer } });
+        // console.log(typeof reviewers, reviewers);
+
+        let reviews;
+
+        if (typeof reviewers === 'string') {
+            reviews = [{ reviewer: reviewers }];
+        } else {
+            // Handle the case when reviewers is an array of strings
+            reviews = reviewers.map(reviewer => ({ reviewer }));
+        }
+
+
         try {
             if (req.isAuthenticated()) {
                 let review = await PerformanceReview.create({ employeeId, reviewers: reviews });
