@@ -77,17 +77,18 @@
                                     </td>
                                     <td>
                                         <select name="reviewers" class="form-select" aria-label="Select reviewer" aria-placeholder="select reviewer" multiple>
-                                            <option selected disabled>Select a Reviewer</option>
+                                            <option selected disabled>Select a Revi ewer</option>
+                                            <% if (!employee.isAdmin) { %>
+
                                             <% employees.filter(emp => emp._id !== employee._id).forEach(function(employee, index) { %>
-                                                <% if (!employee.isAdmin) { %>
+                                               
                                                     <option value="<%= employee._id %>">
                                                         <%= employee.name %>
                                                     </option>
 
-                                                  <% } %>
-                                                
-                                              
                                                 <% }) %>
+
+                                                <% } %>
                                         </select>
                                     </td>
                                     <td>
