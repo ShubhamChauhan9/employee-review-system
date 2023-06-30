@@ -24,6 +24,9 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     store: new MongoStore({ mongoUrl: process.env.MONGO_DB_URL })
+// admin login for mongo atlas store used in deployement for the hoisted link 
+    // email ->abc@xyz.com
+    // password -> 12345
 }));
 
 const strategy = new LocalStrategy(User.authenticate())
