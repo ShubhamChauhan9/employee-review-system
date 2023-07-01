@@ -75,8 +75,8 @@
                                         <input class="isAdminCheck" data="<%=employee._id %>" class="form-check-input" type="checkbox" role="switch" <% if (employee.isAdmin) { %> checked
                                         <% } %> />
                                     </td>
-                                    <td>
-                                        <% if (!employee.isAdmin) { %>
+                                    <% if (!employee.isAdmin) { %>
+                                        <td>
                                             <select name="reviewers" class="form-select" aria-label="Select reviewer" aria-placeholder="select reviewer" multiple>
                                             <option selected disabled>Select a Revi ewer</option>
 
@@ -89,11 +89,11 @@
                                                 <% }) %>
 
                                             </select>
-                                            <% } %>
-                                    </td>
-                                    <td>
-                                        <button type="submit" class="btn btn-primary">Update</button>
-                                    </td>
+                                        </td>
+                                        <td>
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </td>
+                                        <% } %>
                                 </form>
 
                             </tr>
@@ -131,6 +131,27 @@
 
 
                         <% }) %>
+        </div>
+
+        <div class="row gx-4 border p-4">
+            <div class="col">
+                <h2>Performance Reviews Requiring Feedback</h2>
+                <!-- Add form for submitting feedback -->
+                <% reviews.forEach(function(review) { %>
+                    <div class="border p-4 mb-2">
+                        <h5> Submit Feedback for
+                            <%= review.employeeId.name %>
+                        </h5>
+                        <form action="/employee/performance-reviews/<%= review._id %>/<%=user._id %>" method="post">
+                            <div class="form-outline mb-4">
+                                <input class="form-control" value="<%= review.reviewers.find(rev => rev.reviewer.equals(user._id))?.feedback %>" id="feedback" type="text" name="feedback" placeholder="Feedback" required>
+                                <label class="form-label" for="feedback">Feedback</label>
+                            </div>
+                            <button class="btn btn-primary" type="submit">Submit Feedback</button>
+                        </form>
+                    </div>
+                    <% }) %>
+            </div>
         </div>
     </main>
     <footer>
