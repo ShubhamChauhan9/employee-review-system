@@ -10,6 +10,6 @@
 
 # Make 1 login for admin and employee
 - An employee can register, only admin can make an employee an admin
-# admin credentials for hoisted link login-
+# admin credentials for hosted link login-
     email ->abc@xyz.com
     password -> 12345
