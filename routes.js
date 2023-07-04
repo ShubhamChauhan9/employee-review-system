@@ -45,7 +45,7 @@ module.exports = function(app) {
         const { reviewId, reviewerId } = req.params;
         const { feedback } = req.body;
         try {
-            await PerformanceReview.findOneAndUpdate({ _id: reviewId, "reviewers.reviewer": reviewerId }, { "reviewers.0.feedback": feedback });
+            await PerformanceReview.findOneAndUpdate({ _id: reviewId, "reviewers.reviewer": reviewerId }, { $set: { "reviewers.$.feedback": feedback } });
             res.send("Feedback saved successfuly")
         } catch (err) {
             res.send("Failed to save Feedback")
@@ -56,8 +56,6 @@ module.exports = function(app) {
     app.post('/employee/addreview/:employeeId', async function(req, res) {
         const { employeeId } = req.params;
         const { reviewers } = req.body;
-        // console.log(typeof reviewers, reviewers);
-
         let reviews;
 
         if (typeof reviewers === 'string') {
@@ -115,11 +113,10 @@ module.exports = function(app) {
             if (req.user.isAdmin) {
                 let employees = await User.find();
                 let reviews = await PerformanceReview.find().populate({ path: 'employeeId' }).populate({ path: 'reviewers.reviewer' }).exec();
-                // console.log(reviews);
-                res.render("admin", { user: req.user, employees: employees, reviews, isAuthenticated: true })
+                let adminReviews = await PerformanceReview.find({ "reviewers.reviewer": req.user._id }).populate({ path: 'employeeId' }).exec();
+                res.render("admin", { user: req.user, employees: employees, adminReviews, reviews, isAuthenticated: true })
             } else {
                 let reviews = await PerformanceReview.find({ "reviewers.reviewer": req.user._id }).populate({ path: 'employeeId' }).exec();
-                // console.log(reviews);
                 res.render("employee", { user: req.user, reviews: reviews, isAuthenticated: true })
             }
         } else {

@@ -78,15 +78,16 @@
                                     <% if (!employee.isAdmin) { %>
                                         <td>
                                             <select name="reviewers" class="form-select" aria-label="Select reviewer" aria-placeholder="select reviewer" multiple>
-                                            <option selected disabled>Select a Revi ewer</option>
+                                                <option selected disabled>Select a Revi ewer</option>
 
-                                            <% employees.filter(emp => emp._id !== employee._id).forEach(function(employee, index) { %>
-                                               
+                                                <% employees.filter(emp=> emp._id !==
+                                                    employee._id).forEach(function(employee, index) { %>
+
                                                     <option value="<%= employee._id %>">
                                                         <%= employee.name %>
                                                     </option>
 
-                                                <% }) %>
+                                                    <% }) %>
 
                                             </select>
                                         </td>
@@ -106,9 +107,7 @@
         </div>
         <div class="row">
             <% reviews.forEach(function(review, index) { %>
-
-                <% if (review.reviewers[0].feedback) { %>
-
+                <% if (review.reviewers.find(rev => rev.feedback)) { %>
                     <div>
                         <h5>Review Of
                             <%= review.employeeId.name %>
@@ -116,20 +115,19 @@
                         <ul>
                             <% review.reviewers.forEach(function(reviewer, index) { %>
                                 <% if (reviewer.feedback) { %>
-                                    <li>
-                                        Reviewed By:
-                                        <%= reviewer.reviewer.name %>
-                                            FeedBack :
-                                            <%= reviewer.feedback %>
-                                    </li>
+                                    <form action="/employee/performance-reviews/<%= review._id %>/<%=reviewer.reviewer._id %>" method="post">
+                                        <li>
+                                            Reviewed By:
+                                            <%= reviewer.reviewer.name %>
+                                                <br/> FeedBack : <input name="feedback" value="<%= reviewer.feedback %>">
+                                                <button class="btn btn-warning" type="submit">Update</button>
+                                        </li>
+                                    </form>
                                     <% } %>
                                         <% }) %>
                         </ul>
                     </div>
-
                     <% } %>
-
-
                         <% }) %>
         </div>
 
@@ -137,14 +135,14 @@
             <div class="col">
                 <h2>Performance Reviews Requiring Feedback</h2>
                 <!-- Add form for submitting feedback -->
-                <% reviews.forEach(function(review) { %>
+                <% adminReviews.forEach(function(review) { %>
                     <div class="border p-4 mb-2">
                         <h5> Submit Feedback for
                             <%= review.employeeId.name %>
                         </h5>
                         <form action="/employee/performance-reviews/<%= review._id %>/<%=user._id %>" method="post">
                             <div class="form-outline mb-4">
-                                <input class="form-control" value="<%= review.reviewers.find(rev => rev.reviewer.equals(user._id))?.feedback %>" id="feedback" type="text" name="feedback" placeholder="Feedback" required>
+                                <input class="form-control" id="feedback-<%= review._id %>" type="text" name="feedback" placeholder="Feedback" required>
                                 <label class="form-label" for="feedback">Feedback</label>
                             </div>
                             <button class="btn btn-primary" type="submit">Submit Feedback</button>
