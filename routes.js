@@ -15,18 +15,37 @@ module.exports = function(app) {
         }
     });
 
-    app.post('/register', function(req, res) {
+    // app.post('/register', function(req, res) {
+    //     const { name, email, isAdmin } = req.body;
+    //     User.register(new User({ name, email, isAdmin: isAdmin === "on" ? true : false, username: email }), req.body.password, function(err, user) {
+    //         if (err) {
+    //             return res.send("Failed to created user");
+    //         } else {
+    //             if (isAdmin) {
+    //                 return res.send("Admin created successfuly");
+    //             }
+    //             return res.send("Employee created successfuly");
+    //         }
+    //     });
+    // });
+    app.post('/register', async(req, res) => {
         const { name, email, isAdmin } = req.body;
-        User.register(new User({ name, email, isAdmin: isAdmin === "on" ? true : false, username: email }), req.body.password, function(err, user) {
-            if (err) {
-                return res.send("Failed to created user");
+
+        try {
+            const userCount = await User.countDocuments({});
+            const isUserAdmin = userCount === 0 ? true : isAdmin === "on";
+            console.log(isUserAdmin);
+            const user = new User({ name, email, isAdmin: isUserAdmin, username: email });
+            await User.register(user, req.body.password);
+
+            if (isUserAdmin) {
+                return res.send("Admin created successfully");
             } else {
-                if (isAdmin) {
-                    return res.send("Admin created successfuly");
-                }
-                return res.send("Employee created successfuly");
+                return res.send("Employee created successfully");
             }
-        });
+        } catch (err) {
+            return res.status(500).send("Failed to create user");
+        }
     });
 
 
